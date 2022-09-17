@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-     
+
       contentHTML: {
         type: Sequelize.TEXT("long"),
       },
@@ -32,11 +32,11 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       createdAt: {
-         allowNull: true,
+        allowNull: true,
         type: Sequelize.DATE,
       },
       updatedAt: {
-         allowNull: true,
+        allowNull: true,
         type: Sequelize.DATE,
       },
     });
