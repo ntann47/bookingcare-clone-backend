@@ -65,7 +65,90 @@ const getAllDoctors = () => {
     }
   });
 };
-const postDoctorInfoService = (inputData) => {};
+const postDoctorInfoService = (inputData) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (
+        (!inputData.contentHTML,
+        !inputData.contentMarkdown,
+        !inputData.description,
+        !inputData.doctorId,
+        !inputData.action,
+        !inputData.selectedPrice,
+        !inputData.selectedPayment,
+        !inputData.selectedProvince,
+        !inputData.clinicName,
+        !inputData.clinicAddress,
+        !inputData.specialtyId,
+        !inputData.clinicId)
+      ) {
+        resolve({
+          errCode: 1,
+          errMessage: "Missing data",
+        });
+      } else {
+        if (inputData.action === "CREATE") {
+          await db.Doctor_Info.create({
+            doctorId: inputData.doctorId,
+            specialtyId: inputData.specialtyId,
+            clinicId: inputData.clinicId,
+            priceId: inputData.selectedPrice,
+            provinceId: inputData.selectedProvince,
+            paymentId: inputData.selectedPayment,
+            addressClinic: inputData.clinicAddress,
+            nameClinic: inputData.clinicName,
+            note: inputData.note,
+          });
+          await db.Markdown.create({
+            contentHTML: inputData.contentHTML,
+            contentMarkdown: inputData.contentMarkdown,
+            description: inputData.description,
+            doctorId: inputData.doctorId,
+            specialtyId: inputData.specialtyId,
+            clinicId: inputData.clinicId,
+          });
+        } else if (inputData.action === "EDIT") {
+          let doctorMarkdown = await db.Markdown.findOne({
+            where: {
+              doctorId: inputData.doctorId,
+            },
+            raw: false,
+          });
+          let doctorInfo = await db.Doctor_Info.findOne({
+            where: { doctorId: inputData.doctorId },
+            raw: false,
+          });
+          if (doctorMarkdown) {
+            (doctorMarkdown.contentHTML = inputData.contentHTML),
+              (doctorMarkdown.contentMarkdown = inputData.contentMarkdown),
+              (doctorMarkdown.specialtyId = inputData.specialtyId),
+              (doctorMarkdown.clinicId = inputData.clinicId),
+              (doctorMarkdown.description = inputData.description);
+            await doctorMarkdown.save();
+          }
+          if (doctorInfo) {
+            (doctorInfo.doctorId = inputData.doctorId),
+              (doctorInfo.specialtyId = inputData.specialtyId),
+              (doctorInfo.clinicId = inputData.clinicId),
+              (doctorInfo.priceId = inputData.selectedPrice),
+              (doctorInfo.provinceId = inputData.selectedProvince),
+              (doctorInfo.paymentId = inputData.selectedPayment),
+              (doctorInfo.addressClinic = inputData.clinicAddress),
+              (doctorInfo.nameClinic = inputData.clinicName),
+              (doctorInfo.note = inputData.note);
+            await doctorInfo.save();
+          }
+        }
+        resolve({
+          errCode: 0,
+          errMessage: "Successfully",
+        });
+      }
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
 const getDoctorDetailByIdService = (doctorId) => {
   return new Promise(async (resolve, reject) => {
     try {
