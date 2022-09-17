@@ -69,7 +69,8 @@ const handleGetClinicDetailByIdService = async (clinicId) => {
           errMessage: "Missing data",
         });
       } else {
-        let data = await db.Clinic.findOne({
+        let data = { clinicDetail: {}, clinicDoctors: [] };
+        data.clinicDetail = await db.Clinic.findOne({
           where: { id: clinicId },
           attributes: [
             "name",

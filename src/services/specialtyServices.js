@@ -63,12 +63,12 @@ const handleGetDetailSpecialtyByIdService = async (specialtyId, location) => {
           errMessage: "Missing data",
         });
       } else {
-        let data = await db.Specialty.findOne({
+        let data = { specialtyDetail: {}, specialtyDoctors: [] };
+        data.specialtyDetail = await db.Specialty.findOne({
           where: { id: specialtyId },
           attributes: ["name", "descriptionHTML", "descriptionMarkdown"],
         });
         if (data) {
-          let arrDoctorId = [];
           let doctors = [];
           if (location === "ALL") {
             doctors = await db.Doctor_Info.findAll({
@@ -76,7 +76,7 @@ const handleGetDetailSpecialtyByIdService = async (specialtyId, location) => {
               attributes: ["doctorId", "provinceId"],
             });
             data.specialtyDoctors = doctors;
-
+            console.log(data);
             resolve({
               errCode: 0,
               errMessage: "Successfully",
