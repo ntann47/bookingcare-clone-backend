@@ -7,23 +7,7 @@ import connectDB from "./config/connectDB";
 import dotenv from "dotenv";
 dotenv.config();
 const app = express();
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-credentials", "true");
-  res.header("Acces-Control-Allow-Origin", "*");
-  res.header(
-    "Acces-Control-Allow-Header",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization, X-CSRF-Token"
-  );
-  res.header(
-    "Acces-Control-Allow-Methods",
-    "GET,OPTIONS, POST, DELETE, PUT, PATCH"
-  );
-
-  next();
-});
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors({ credentials: true, origin: true }));
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb" }, { extended: true }));
