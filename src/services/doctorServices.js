@@ -88,17 +88,6 @@ const postDoctorInfoService = (inputData) => {
         });
       } else {
         if (inputData.action === "CREATE") {
-          await db.Doctor_Info.create({
-            doctorId: inputData.doctorId,
-            specialtyId: inputData.specialtyId,
-            clinicId: inputData.clinicId,
-            priceId: inputData.selectedPrice,
-            provinceId: inputData.selectedProvince,
-            paymentId: inputData.selectedPayment,
-            addressClinic: inputData.clinicAddress,
-            nameClinic: inputData.clinicName,
-            note: inputData.note,
-          });
           await db.Markdown.create({
             contentHTML: inputData.contentHTML,
             contentMarkdown: inputData.contentMarkdown,
@@ -114,10 +103,6 @@ const postDoctorInfoService = (inputData) => {
             },
             raw: false,
           });
-          let doctorInfo = await db.Doctor_Info.findOne({
-            where: { doctorId: inputData.doctorId },
-            raw: false,
-          });
           if (doctorMarkdown) {
             (doctorMarkdown.contentHTML = inputData.contentHTML),
               (doctorMarkdown.contentMarkdown = inputData.contentMarkdown),
@@ -126,18 +111,34 @@ const postDoctorInfoService = (inputData) => {
               (doctorMarkdown.description = inputData.description);
             await doctorMarkdown.save();
           }
-          if (doctorInfo) {
-            (doctorInfo.doctorId = inputData.doctorId),
-              (doctorInfo.specialtyId = inputData.specialtyId),
-              (doctorInfo.clinicId = inputData.clinicId),
-              (doctorInfo.priceId = inputData.selectedPrice),
-              (doctorInfo.provinceId = inputData.selectedProvince),
-              (doctorInfo.paymentId = inputData.selectedPayment),
-              (doctorInfo.addressClinic = inputData.clinicAddress),
-              (doctorInfo.nameClinic = inputData.clinicName),
-              (doctorInfo.note = inputData.note);
-            await doctorInfo.save();
-          }
+        }
+        let doctorInfo = await db.Doctor_Info.findOne({
+          where: { doctorId: inputData.doctorId },
+          raw: false,
+        });
+        if (doctorInfo) {
+          (doctorInfo.doctorId = inputData.doctorId),
+            (doctorInfo.specialtyId = inputData.specialtyId),
+            (doctorInfo.clinicId = inputData.clinicId),
+            (doctorInfo.priceId = inputData.selectedPrice),
+            (doctorInfo.provinceId = inputData.selectedProvince),
+            (doctorInfo.paymentId = inputData.selectedPayment),
+            (doctorInfo.addressClinic = inputData.clinicAddress),
+            (doctorInfo.nameClinic = inputData.clinicName),
+            (doctorInfo.note = inputData.note);
+          await doctorInfo.save();
+        } else {
+          await db.Doctor_Info.create({
+            doctorId: inputData.doctorId,
+            specialtyId: inputData.specialtyId,
+            clinicId: inputData.clinicId,
+            priceId: inputData.selectedPrice,
+            provinceId: inputData.selectedProvince,
+            paymentId: inputData.selectedPayment,
+            addressClinic: inputData.clinicAddress,
+            nameClinic: inputData.clinicName,
+            note: inputData.note,
+          });
         }
         resolve({
           errCode: 0,
